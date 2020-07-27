@@ -9,7 +9,7 @@ import { RootState } from 'redux/store';
 import { SOCKET_ENDPOINT } from 'config';
 import { SOCKET_EVENT, Message, User, RoomData } from 'types';
 
-import InforBar from 'components/info-bar';
+import InfoBar from 'components/info-bar';
 import Messages from 'components/messages';
 import Form from 'components/form';
 import Users from 'components/users';
@@ -26,8 +26,8 @@ const Chat: FC = () => {
   const socket = useRef<SocketIOClient.Socket>();
 
   const [users, setUsers] = useState<User[]>([]);
-  const [message, setMessasge] = useState('');
-  const [messages, setMessasges] = useState<Message[]>([]);
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
     if (!name && !room) {
@@ -44,7 +44,7 @@ const Chat: FC = () => {
     });
 
     socket.current.on(MESSAGE, (message: Message) => {
-      setMessasges((prev) => [...prev, message]);
+      setMessages((prev) => [...prev, message]);
     });
 
     socket.current.on(ROOM_DATA, ({ users }: RoomData) => {
@@ -60,11 +60,11 @@ const Chat: FC = () => {
     e.preventDefault();
 
     if (message) {
-      socket.current?.emit(SEND_MESSAGE, message, () => setMessasge(''));
+      socket.current?.emit(SEND_MESSAGE, message, () => setMessage(''));
     }
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => setMessasge(e.target.value);
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => setMessage(e.target.value);
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && sendMessage(e);
 
@@ -73,7 +73,7 @@ const Chat: FC = () => {
       <Users users={users} name={name} />
 
       <Container>
-        <InforBar room={room} />
+        <InfoBar room={room} />
 
         <Messages messages={messages} name={name} />
 
